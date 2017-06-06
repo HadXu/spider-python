@@ -25,28 +25,66 @@ class ZhihuSpider(scrapy.Spider):
                       self.parse_followers)
 
     def parse_user(self, response):
-        result = json.loads(response.text)
-        item = UserItem()
-        for field in item.fields:
-            if field in result.keys():
-                item[field] = result.get(field)
-        yield item
+        if response.status == 200:
+            result = json.loads(response.text)
+            item = UserItem()
+            item['url_token'] = result.get('url_token')
+            item['name'] = result.get('name')
+            # location
+            try:
+                item['location'] = result.get('locations')[0].get('name')
+            except:
+                item['location'] = ''
+
+            item['gender'] = result.get('gender')
+
+            item['avatar_url'] = result.get('avatar_url').replace('is','xl')
+
+            # business
+            try:
+                item['business'] = result.get('business').get('name')
+            except:
+                item['business'] = ''
+
+            # company and job
+            try:
+                item['company'] = result.get('employments')[0].get('company').get('name')
+                item['job'] = result.get('employments')[0].get('job').get('name')
+            except:
+                item['company'] = ''
+                item['job'] = ''
+
+            item['headline'] = result.get('headline', '')
+
+            # school
+            try:
+                item['school'] = result.get('educations')[0].get('school').get('name')
+            except:
+                item['school'] = ''
+
+            item['voteup_count'] = result.get('voteup_count')
+            item['follower_count'] = result.get('follower_count')
+
+            yield item
+
 
     def parse_follows(self, response):
         results = json.loads(response.text)
         if 'data' in results.keys():
             for result in results.get('data'):
-                yield Request(self.user_url.format(user=result.get('url_token'),include=self.user_query),self.parse_user)
+                yield Request(self.user_url.format(user=result.get('url_token'), include=self.user_query),
+                              self.parse_user)
 
-        if 'paging' in results.keys() and results.get('paging').get('is_end')==False:
+        if 'paging' in results.keys() and results.get('paging').get('is_end') == False:
             next_page = results.get('paging').get('next')
-            yield Request(next_page,self.parse_follows)
+            yield Request(next_page, self.parse_follows)
 
     def parse_followers(self, response):
         results = json.loads(response.text)
         if 'data' in results.keys():
             for result in results.get('data'):
-                yield Request(self.user_url.format(user=result.get('url_token'),include=self.user_query),self.parse_followers)
-        if 'paging' in results.keys() and results.get('paging').get('is_end')==False:
+                yield Request(self.user_url.format(user=result.get('url_token'), include=self.user_query),
+                              self.parse_user)
+        if 'paging' in results.keys() and results.get('paging').get('is_end') == False:
             next_page = results.get('paging').get('next')
-            yield Request(next_page,self.parse_followers)
+            yield Request(next_page, self.parse_followers)
