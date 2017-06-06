@@ -3,6 +3,7 @@ import scrapy
 from scrapy import Request
 import json
 from zhihuuser.items import UserItem
+from .helper import help
 
 
 class ZhihuSpider(scrapy.Spider):
@@ -18,6 +19,10 @@ class ZhihuSpider(scrapy.Spider):
     followers_query = 'data[*].answer_count,articles_count,gender,follower_count,is_followed,is_following,badge[?(type=best_answerer)].topics'
 
     def start_requests(self):
+        last_user = help().get_last_url_token()
+        if last_user != '':
+            self.start_user = last_user
+
         yield Request(self.user_url.format(user=self.start_user, include=self.user_query), self.parse_user)
         yield Request(self.follows_url.format(user=self.start_user, include=self.follows_query, limit=20, offset=0),
                       self.parse_follows)
@@ -38,7 +43,7 @@ class ZhihuSpider(scrapy.Spider):
 
             item['gender'] = result.get('gender')
 
-            item['avatar_url'] = result.get('avatar_url').replace('is','xl')
+            item['avatar_url'] = result.get('avatar_url').replace('is', 'xl')
 
             # business
             try:
@@ -66,7 +71,6 @@ class ZhihuSpider(scrapy.Spider):
             item['follower_count'] = result.get('follower_count')
 
             yield item
-
 
     def parse_follows(self, response):
         results = json.loads(response.text)
