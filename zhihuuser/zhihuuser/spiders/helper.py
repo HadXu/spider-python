@@ -8,8 +8,8 @@ class help:
         try:
             client = pymongo.MongoClient()
             db = client['zhihu']
-            users = db['users'].find().sort('_id',pymongo.DESCENDING).limit(1)
-            return users[0].get('url_token')
+            users = db['users'].find({}).sort('follower_count', pymongo.DESCENDING).limit(50)
+            return [user.get('url_token') for user in users]
         except:
             return ''
 
