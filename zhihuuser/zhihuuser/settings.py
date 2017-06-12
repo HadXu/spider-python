@@ -26,7 +26,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-# DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 2
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
@@ -41,6 +41,7 @@ COOKIES_ENABLED = False
 DEFAULT_REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
     'authorization': 'oauth c3cef7c66a1843f8b3a9e6a1e3160e20'
+    # 'authorization': 'Bearer Mi4wQUJDS21DUTFud2dBQUlJUENVN2JDeGNBQUFCaEFsVk45aUJpV1FEYVN6d3hXeHlORHprWjg1bDljcnA0bjAzTlJR|1497011221|912574962b5456bc402589f7cddb205bd68a7d1d'
 }
 
 # Enable or disable spider middlewares
@@ -67,7 +68,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'zhihuuser.pipelines.MongoPipeline': 300,
-    'scrapy_redis.pipelines.RedisPipeline': 301,
+    # 'scrapy_redis.pipelines.RedisPipeline': 301,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -94,11 +95,8 @@ ITEM_PIPELINES = {
 MONGO_URI = 'localhost'
 MONGO_DATABASE = 'zhihu'
 
-
-
 # 分布式方案
 
-SCHEDULER = "scrapy_redis.scheduler.Scheduler"
-
-
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+#
+# DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"

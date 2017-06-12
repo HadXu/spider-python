@@ -8,8 +8,6 @@
 from scrapy import signals
 import random
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
-from scrapy.downloadermiddlewares.httpproxy import HttpProxyMiddleware
-import base64
 
 
 class ZhihuuserSpiderMiddleware(UserAgentMiddleware):
@@ -98,5 +96,5 @@ class ProxyMiddleware:
         except Exception:
             pass
 
-    ip_pools = [{'ip': '1.195.204.200:8118'}, {'ip': '115.220.6.248:808'},
-                {'ip': '175.155.242.148:808'}, {'ip': '101.224.30.86:9000'}]
+    ip_pools = [{'ip': '182.254.156.224:8888'},
+                {'ip': '182.254.209.252:8888'}]
